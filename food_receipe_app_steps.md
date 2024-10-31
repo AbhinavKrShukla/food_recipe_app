@@ -83,3 +83,50 @@
       ],
    )
    ```
+
+### Step 2: Create Search Bar in the Homepage
+
+- Create a Container as the Stack() second element, which works as a Foreground Container. 
+- Create Search bar in it. Follow.
+  
+   ```dart 
+   // Search Bar
+   SafeArea(
+      child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      decoration: BoxDecoration(
+         color: Colors.white,
+         borderRadius: BorderRadius.circular(24)
+      ),
+      child: Row(
+         children: [
+            GestureDetector(
+            onTap: (){
+               if ((searchController.text).replaceAll(' ', '').isEmpty){
+                  print("Blank Search");
+               } else {
+                  // Navigator.pushReplacementNamed(context, routeName)
+               }
+            },
+            child: Container(
+               margin: const EdgeInsets.fromLTRB(3, 0, 7, 0),
+               child: const Icon(
+                  Icons.search,
+                  color: Colors.blueAccent,
+               ),
+            ),
+            ),
+            
+            Expanded(child: TextField(
+            controller: searchController,
+            decoration: const InputDecoration(
+               border: InputBorder.none, hintText: "Let's Cook Something!"
+            ),
+            ))
+         ],
+      ),
+      ),
+   )
+   // Search bar ----------
+   ```
