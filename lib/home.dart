@@ -8,6 +8,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  // Text Controllers
+  TextEditingController searchController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +32,53 @@ class _HomeState extends State<Home> {
           ),
           
           // foreground
-          const SafeArea(child: Text('Home Page', style: TextStyle(color: Colors.white),))
+          Column(
+            children: [
+
+              // Search Bar
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24)
+                  ),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          if ((searchController.text).replaceAll(' ', '').isEmpty){
+                            print("Blank Search");
+                          } else {
+                            // Navigator.pushReplacementNamed(context, routeName)
+                          }
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(3, 0, 7, 0),
+                          child: const Icon(
+                            Icons.search,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                      ),
+                      
+                      Expanded(child: TextField(
+                        controller: searchController,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none, hintText: "Let's Cook Something!"
+                        ),
+                      ))
+                    ],
+                  ),
+                ),
+              )
+              // Search bar ----------
+
+
+
+            ],
+          )
         ],
       )
     );
