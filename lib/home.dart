@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -10,7 +12,22 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   // Text Controllers
-  TextEditingController searchController = new TextEditingController();
+  TextEditingController searchController = TextEditingController();
+
+  getRecipe(String query) async {
+    String url = "https://api.edamam.com/api/recipes/v2?q=$query&type=public&app_id=63bf14e4&app_key=3d0c7b028296776d416ba4b60edd55a4";
+
+    var response = await http.get(Uri.parse(url));
+    Map data = jsonDecode(response.body);
+    print(data);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // getRecipe("Ladoo");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +68,7 @@ class _HomeState extends State<Home> {
                           if ((searchController.text).replaceAll(' ', '').isEmpty){
                             print("Blank Search");
                           } else {
-                            // Navigator.pushReplacementNamed(context, routeName)
+                            getRecipe(searchController.text);
                           }
                         },
                         child: Container(
@@ -72,10 +89,22 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
-              )
+              ),
               // Search bar ----------
 
-
+              // Heading
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("WHAT DO YOU WANT TO COOK TODAY?", style: TextStyle(fontSize: 33, color: Colors.white),),
+                    SizedBox(height: 10),
+                    Text("Let's Cook Something New!", style: TextStyle(fontSize: 20, color: Colors.white),)
+                  ],
+                ),
+              )
+              // Heading -------------
 
             ],
           )

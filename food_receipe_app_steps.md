@@ -130,3 +130,95 @@
    )
    // Search bar ----------
    ```
+
+#### Step 2.1: Download *Poppins* font from Google fonts and add it as the default font family of the app.
+
+- First download it from **Google fonts**, and add it in pubspec.yaml file. 
+- Then, just go to main.dart > MaterialApp() > ThemeData > then add it.
+
+   ```dart
+   return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+         fontFamily: "Poppins",     // the default font family
+         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+         useMaterial3: true,
+      ),
+      home: Home(),
+      );
+   ```
+
+#### Step 2.2: Add the Heading of the Home() page.
+
+- It is the next element of the **Foreground Column()** in the **Stack()**.
+
+```dart
+// Heading
+Container(
+   padding: EdgeInsets.symmetric(horizontal: 20),
+   child: const Column(
+   crossAxisAlignment: CrossAxisAlignment.start,
+   children: [
+      Text("WHAT DO YOU WANT TO COOK TODAY?", style: TextStyle(fontSize: 33, color: Colors.white),),
+      SizedBox(height: 10),
+      Text("Let's Cook Something New!", style: TextStyle(fontSize: 20, color: Colors.white),)
+   ],
+   ),
+)
+// Heading -------------
+```
+
+
+### Step: 3: Getting Data from API.
+
+#### 3.1: Setup API
+
+- Required Dart Packages: http
+- URL: "https://api.edamam.com/api/recipes/v2?type=public&app_id=63bf14e4&app_key=3d0c7b028296776d416ba4b60edd55a4&q=biryani";
+
+#### 3.2: Fetch Data from API
+
+- Basic way to fetch data:
+  1. Create base url variable.
+  2. Create an _async_ method named **getRecipe** (with no return type needed to specify).
+     - Params:
+       - query <String> : this is search query, entered by the user.
+     - This function will hit Api request and get the response.
+     - Modify the base url such that it hits with user given search query. Save this url in a new local variable within the function.
+     
+  3. Hit the get method of http and save it in response<var> variable.
+  4. Then, jsonDecode() the response.body and save it in new local variable data<Map>. Then print it (for testing purpose).
+  5. Call this method in the **Search bar**, with providing the search text as the user query in the **getRecipe()**.
+  
+- Example:
+  ```dart
+  getRecipe(String query) async {
+    String url = "https://api.edamam.com/api/recipes/v2?q=$query&type=public&app_id=63bf14e4&app_key=3d0c7b028296776d416ba4b60edd55a4";
+
+    var response = await http.get(Uri.parse(url));
+    Map data = jsonDecode(response.body);
+    print(data);
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
