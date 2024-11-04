@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:food_recipe_app/RecipeView.dart';
 import 'package:food_recipe_app/models.dart';
 import 'package:food_recipe_app/search.dart';
 import 'package:http/http.dart' as http;
@@ -52,7 +54,8 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getRecipe("random");
+    Random random = Random();
+    getRecipe(foodNames[random.nextInt(foodNames.length)]);
   }
 
   @override
@@ -104,7 +107,7 @@ class _HomeState extends State<Home> {
                               print("Blank Search");
                             } else {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => Search('random'))
+                                  MaterialPageRoute(builder: (context) => Search(searchController.text))
                               );
                             }
                           },
@@ -145,114 +148,122 @@ class _HomeState extends State<Home> {
             
                 // Displaying Recipe List
                 Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: recipeList.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Stack(
-                            children: [
-                              // Base image
-                              Container(
-                              width: double.infinity,
-                              height: 250,
-                              margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                color: Colors.white
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Image.network(
-                                  recipeList[index].appImgUrl,
-                                  fit: BoxFit.cover,
-                                )
-                              ),
-                              ),
-
-                              // Name and Calories count
-                              Container(
+                      return InkWell(
+                        onTap: (){
+                          // RecipeView("www.facebook.com");
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => RecipeView(recipeList[index].appUrl, recipeList[index].appLabel))
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Stack(
+                              children: [
+                                // Base image
+                                Container(
                                 width: double.infinity,
                                 height: 250,
                                 margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
-                                padding: const EdgeInsets.only(left: 15, right: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.white
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Image.network(
+                                    recipeList[index].appImgUrl,
+                                    fit: BoxFit.cover,
+                                  )
+                                ),
+                                ),
+
+                                // Name and Calories count
+                                Container(
+                                  width: double.infinity,
+                                  height: 250,
+                                  margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                                  padding: const EdgeInsets.only(left: 15, right: 15),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
 
 
-                                  children: [
-                                    // calories count
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        const Icon(
-                                          Icons.local_fire_department,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          recipeList[index].appCalories.toInt().toString(),
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-
-                                    // time Count
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        const Icon(
-                                          Icons.timer_outlined,
-                                          color: Colors.white,
-                                        ),
-                                        recipeList[index].totalTime.toInt() == 0 ?
-                                          const Text('-', style: TextStyle(color: Colors.white),) :
-                                          Text(' ${recipeList[index].totalTime.toInt()} min',
-                                          style: const TextStyle(color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                    // Spacer(),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 200,
-                                      // color: Colors.blueAccent,
-                                      child: Column(
+                                    children: [
+                                      // calories count
+                                      Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Container(
-                                            decoration: BoxDecoration(color: Color(0x44000000)),
-                                            child: Text(
-                                              recipeList[index].appLabel,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15
-                                              ),
-                                            ),
+                                          const Icon(
+                                            Icons.local_fire_department,
+                                            color: Colors.white,
+                                          ),
+                                          Text(
+                                            recipeList[index].appCalories.toInt().toString(),
+                                            style: TextStyle(color: Colors.white),
                                           ),
                                         ],
                                       ),
-                                    )
-                                  ],
 
-                                ),
-                              )
-                          ]
-                          ),
+                                      // time Count
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          const Icon(
+                                            Icons.timer_outlined,
+                                            color: Colors.white,
+                                          ),
+                                          recipeList[index].totalTime.toInt() == 0 ?
+                                            const Text('-', style: TextStyle(color: Colors.white),) :
+                                            Text(' ${recipeList[index].totalTime.toInt()} min',
+                                            style: const TextStyle(color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                      // Spacer(),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 200,
+                                        // color: Colors.blueAccent,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(color: Color(0x44000000)),
+                                              child: Text(
+                                                recipeList[index].appLabel,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
 
-                          // Name below the thumbnail
-                          // Container(
-                          //   child: Text(
-                          //     recipeList[index].appLabel,
-                          //     style: TextStyle(
-                          //       color: Colors.white
-                          //     ),
-                          //   ),
-                          // )
-                        ],
+                                  ),
+                                )
+                            ]
+                            ),
+
+                            // Name below the thumbnail
+                            // Container(
+                            //   child: Text(
+                            //     recipeList[index].appLabel,
+                            //     style: TextStyle(
+                            //       color: Colors.white
+                            //     ),
+                            //   ),
+                            // )
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -266,3 +277,113 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+
+
+
+
+// list of 100 foods from all over the world.
+List<String> foodNames = [
+  'Sushi',
+  'Tacos',
+  'Pasta',
+  'Biryani',
+  'Paella',
+  'Dim Sum',
+  'Croissant',
+  'Poutine',
+  'Falafel',
+  'Kimchi',
+  'Ceviche',
+  'Ramen',
+  'Baklava',
+  'Shawarma',
+  'Goulash',
+  'Bratwurst',
+  'Samosa',
+  'Pizza',
+  'Chow Mein',
+  'Borscht',
+  'Pho',
+  'Curry',
+  'Moussaka',
+  'Dolma',
+  'Pierogi',
+  'Risotto',
+  'Tiramisu',
+  'Schnitzel',
+  'Chili',
+  'Empanada',
+  'Tonkatsu',
+  'Kebab',
+  'Jollof Rice',
+  'Tamales',
+  'Quiche',
+  'Fried Rice',
+  'Pancakes',
+  'Cheesecake',
+  'Katsu Curry',
+  'Ratatouille',
+  'Banh Mi',
+  'Sashimi',
+  'Fish and Chips',
+  'Naan',
+  'Bubur Ayam',
+  'Arepas',
+  'Fettuccine Alfredo',
+  'Nicoise Salad',
+  'Chili Crab',
+  'Pavlova',
+  'Chaat',
+  'Tortilla Española',
+  'Cacio e Pepe',
+  'Tandoori Chicken',
+  'Gnocchi',
+  'Rogan Josh',
+  'Biryani',
+  'Beef Stroganoff',
+  'Peking Duck',
+  'Churros',
+  'Raclette',
+  'Khoresht',
+  'Tostones',
+  'Poff Poff',
+  'Okonomiyaki',
+  'Paneer Tikka',
+  'Sinigang',
+  'Baba Ganoush',
+  'Zucchini Fritters',
+  'Panzanella',
+  'Sopes',
+  'Couscous',
+  'Dhokla',
+  'Mole',
+  'Gumbo',
+  'Jambalaya',
+  'Eggs Benedict',
+  'Focaccia',
+  'Bakso',
+  'Chimichurri',
+  'Dumplings',
+  'Fennel Sausage',
+  'Haggis',
+  'Korean BBQ',
+  'S’mores',
+  'Tartiflette',
+  'Kofta',
+  'Mofongo',
+  'Soba Noodles',
+  'Vichyssoise',
+  'Pasta Primavera',
+  'Zrazy',
+  'Lassi',
+  'Clam Chowder',
+  'Pasta Carbonara',
+  'Lemon Tart',
+  'Margarita',
+  'Tandoori Fish',
+  'Biryani',
+  'Kale Salad',
+  'Chili Cheese Fries',
+  'Sichuan Pepper Chicken'
+];

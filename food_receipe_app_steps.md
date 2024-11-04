@@ -330,12 +330,134 @@ class RecipeModel {
     }
     
   ```
+  
+  - After this, just create a listView.builder and display the list the way you want.
+   ```dart
+      // Displaying Recipe List
+      Container(
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: recipeList.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: (){
+              // to be displayed in web view
+            },
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    // Base image
+                    Container(
+                    width: double.infinity,
+                    height: 250,
+                    margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Colors.white
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.network(
+                        recipeList[index].appImgUrl,
+                        fit: BoxFit.cover,
+                      )
+                    ),
+                    ),
+
+                    // Name and Calories count
+                    Container(
+                      width: double.infinity,
+                      height: 250,
+                      margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
 
+                        children: [
+                          // calories count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(
+                                Icons.local_fire_department,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                recipeList[index].appCalories.toInt().toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+
+                          // time Count
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Icon(
+                                Icons.timer_outlined,
+                                color: Colors.white,
+                              ),
+                              recipeList[index].totalTime.toInt() == 0 ?
+                                const Text('-', style: TextStyle(color: Colors.white),) :
+                                Text(' ${recipeList[index].totalTime.toInt()} min',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          // Spacer(),
+                          Container(
+                            width: double.infinity,
+                            height: 200,
+                            // color: Colors.blueAccent,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(color: Color(0x44000000)),
+                                  child: Text(
+                                    recipeList[index].appLabel,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+
+                      ),
+                    )
+                ]
+                ),
+
+              ],
+            ),
+          );
+          },
+        ),
+      )
+   ```
 
 
+### Step 4: Displaying the Detailed Recipe in webview
 
+- Prepare
+  - Get this package: `flutter pub add webview_flutter`
 
+- Steps:
+  - Create a new file: **RecipeView.dart** in **lib/**. This file will show WebView.
+  - Create a stateful class: **RecipeList**.
+  - This class will take a **parameter** : **url**. This is the url of the website, which will be 
+    displayed in the WebView.
+  - 
+ 
 
 
 

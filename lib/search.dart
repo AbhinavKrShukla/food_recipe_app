@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:food_recipe_app/models.dart';
 import 'package:http/http.dart' as http;
 
+import 'RecipeView.dart';
+
 class Search extends StatefulWidget {
 
   String query;
@@ -136,114 +138,122 @@ class _SearchState extends State<Search> {
 
                 // Displaying Recipe List
                 Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: recipeList.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Stack(
-                              children: [
-                                // Base image
-                                Container(
-                                  width: double.infinity,
-                                  height: 250,
-                                  margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      color: Colors.white
+                      return InkWell(
+                        onTap: (){
+                          // RecipeView("www.facebook.com");
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) => RecipeView(recipeList[index].appUrl, recipeList[index].appLabel))
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Stack(
+                                children: [
+                                  // Base image
+                                  Container(
+                                    width: double.infinity,
+                                    height: 250,
+                                    margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        color: Colors.white
+                                    ),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        child: Image.network(
+                                          recipeList[index].appImgUrl,
+                                          fit: BoxFit.cover,
+                                        )
+                                    ),
                                   ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      child: Image.network(
-                                        recipeList[index].appImgUrl,
-                                        fit: BoxFit.cover,
-                                      )
-                                  ),
-                                ),
 
-                                // Name and Calories count
-                                Container(
-                                  width: double.infinity,
-                                  height: 250,
-                                  margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
-                                  padding: const EdgeInsets.only(left: 15, right: 15),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  // Name and Calories count
+                                  Container(
+                                    width: double.infinity,
+                                    height: 250,
+                                    margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                                    padding: const EdgeInsets.only(left: 15, right: 15),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
 
 
-                                    children: [
-                                      // calories count
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          const Icon(
-                                            Icons.local_fire_department,
-                                            color: Colors.white,
-                                          ),
-                                          Text(
-                                            recipeList[index].appCalories.toInt().toString(),
-                                            style: TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-
-                                      // time Count
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          const Icon(
-                                            Icons.timer_outlined,
-                                            color: Colors.white,
-                                          ),
-                                          recipeList[index].totalTime.toInt() == 0 ?
-                                          const Text('-', style: TextStyle(color: Colors.white),) :
-                                          Text(' ${recipeList[index].totalTime.toInt()} min',
-                                            style: const TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                      // Spacer(),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 200,
-                                        // color: Colors.blueAccent,
-                                        child: Column(
+                                      children: [
+                                        // calories count
+                                        Row(
                                           mainAxisAlignment: MainAxisAlignment.end,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Container(
-                                              decoration: BoxDecoration(color: Color(0x44000000)),
-                                              child: Text(
-                                                recipeList[index].appLabel,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15
-                                                ),
-                                              ),
+                                            const Icon(
+                                              Icons.local_fire_department,
+                                              color: Colors.white,
+                                            ),
+                                            Text(
+                                              recipeList[index].appCalories.toInt().toString(),
+                                              style: const TextStyle(color: Colors.white),
                                             ),
                                           ],
                                         ),
-                                      )
-                                    ],
 
-                                  ),
-                                )
-                              ]
-                          ),
+                                        // time Count
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            const Icon(
+                                              Icons.timer_outlined,
+                                              color: Colors.white,
+                                            ),
+                                            recipeList[index].totalTime.toInt() == 0 ?
+                                            const Text('-', style: TextStyle(color: Colors.white),) :
+                                            Text(' ${recipeList[index].totalTime.toInt()} min',
+                                              style: const TextStyle(color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                        // Spacer(),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 200,
+                                          // color: Colors.blueAccent,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(color: Color(0x44000000)),
+                                                child: Text(
+                                                  recipeList[index].appLabel,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
 
-                          // Name below the thumbnail
-                          // Container(
-                          //   child: Text(
-                          //     recipeList[index].appLabel,
-                          //     style: TextStyle(
-                          //       color: Colors.white
-                          //     ),
-                          //   ),
-                          // )
-                        ],
+                                    ),
+                                  )
+                                ]
+                            ),
+
+                            // Name below the thumbnail
+                            // Container(
+                            //   child: Text(
+                            //     recipeList[index].appLabel,
+                            //     style: TextStyle(
+                            //       color: Colors.white
+                            //     ),
+                            //   ),
+                            // )
+                          ],
+                        ),
                       );
                     },
                   ),
