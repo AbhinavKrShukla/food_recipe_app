@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:food_recipe_app/models.dart';
+import 'package:food_recipe_app/search.dart';
 import 'package:http/http.dart' as http;
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,6 +16,7 @@ class _HomeState extends State<Home> {
 
   // Api response variables
   List<RecipeModel> recipeList = <RecipeModel>[];
+  bool isLoading = true;
 
   // Text Controllers
   TextEditingController searchController = TextEditingController();
@@ -32,6 +34,12 @@ class _HomeState extends State<Home> {
       recipeModel = RecipeModel.fromMap(element['recipe']);
       recipeList.add(recipeModel);
     });
+
+    // the content is now fully loaded
+    setState(() {
+      isLoading = false;
+    });
+
     // log(recipeList.toString());
 
     recipeList.forEach( (recipe) {
@@ -44,7 +52,7 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getRecipe("Ladoo");
+    getRecipe("random");
   }
 
   @override
@@ -68,7 +76,15 @@ class _HomeState extends State<Home> {
           
           // foreground
           SingleChildScrollView(
-            child: Column(
+            child:
+            isLoading == true ?
+            Center(
+                child: Container(padding: EdgeInsets.only(top: 50.0),
+                    child: CircularProgressIndicator()
+                )
+            )
+                :
+            Column(
               children: [
             
                 // Search Bar
@@ -87,7 +103,9 @@ class _HomeState extends State<Home> {
                             if ((searchController.text).replaceAll(' ', '').isEmpty){
                               print("Blank Search");
                             } else {
-                              getRecipe(searchController.text);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => Search('random'))
+                              );
                             }
                           },
                           child: Container(
@@ -125,15 +143,117 @@ class _HomeState extends State<Home> {
                 ),
                 // Heading -------------
             
-                // Recipe List
+                // Displaying Recipe List
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: 100,
+                    itemCount: recipeList.length,
                     itemBuilder: (context, index) {
-                      return Text("hellos", style: TextStyle(color: Colors.white),);
+                      return Column(
+                        children: [
+                          Stack(
+                            children: [
+                              // Base image
+                              Container(
+                              width: double.infinity,
+                              height: 250,
+                              margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                color: Colors.white
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Image.network(
+                                  recipeList[index].appImgUrl,
+                                  fit: BoxFit.cover,
+                                )
+                              ),
+                              ),
+
+                              // Name and Calories count
+                              Container(
+                                width: double.infinity,
+                                height: 250,
+                                margin: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+                                padding: const EdgeInsets.only(left: 15, right: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+
+
+                                  children: [
+                                    // calories count
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          Icons.local_fire_department,
+                                          color: Colors.white,
+                                        ),
+                                        Text(
+                                          recipeList[index].appCalories.toInt().toString(),
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+
+                                    // time Count
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          Icons.timer_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        recipeList[index].totalTime.toInt() == 0 ?
+                                          const Text('-', style: TextStyle(color: Colors.white),) :
+                                          Text(' ${recipeList[index].totalTime.toInt()} min',
+                                          style: const TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                    // Spacer(),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      // color: Colors.blueAccent,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(color: Color(0x44000000)),
+                                            child: Text(
+                                              recipeList[index].appLabel,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+
+                                ),
+                              )
+                          ]
+                          ),
+
+                          // Name below the thumbnail
+                          // Container(
+                          //   child: Text(
+                          //     recipeList[index].appLabel,
+                          //     style: TextStyle(
+                          //       color: Colors.white
+                          //     ),
+                          //   ),
+                          // )
+                        ],
+                      );
                     },
                   ),
                 )
