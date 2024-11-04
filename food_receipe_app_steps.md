@@ -201,10 +201,135 @@ Container(
   }
   ```
 
+#### 3.3: Create Model
 
+- Create a new file in lib. Then create a dart class (model) named RecipeModel.
+- Create attributes in the RecipeModel. Only create attributes which we require from the api response.
+- Then create a parametrized constructor and give them default values.
+- Then create a factory method: **RecipeModel.fromMap(**<Map>**)**. 
+  This method will return an instance of RecipeModel class with the data fetched 
+  from the api.
 
+```dart
+class RecipeModel {
+  late String appLabel;
+  late String appImgUrl;
+  late double appCalories;
+  late String appUrl;
 
+  RecipeModel({
+    this.appLabel = 'Label',
+    this.appImgUrl = "ImgUrl",
+    this.appCalories = 0.00,
+    this.appUrl = "AppUrl"
+  });
 
+  factory RecipeModel.fromMap(Map recipe) {
+    return RecipeModel(
+      appLabel: recipe['label'],
+      appImgUrl: recipe['image'],
+      appCalories: recipe['calories'],
+      appUrl: recipe['url'],
+    );
+  }
+}
+```
+
+#### 3.4: Implementing list of Recipe Model
+
+- Below is given the sample json response fetched from the Api. In this response, we need the
+  "hit" which is a list of maps, in which we need the "recipe" which is again a map of 
+  different parameters. We need just some of those parameters.
+
+```json
+{
+  "from": 1,
+  "to": 20,
+  "count": 453,
+  "_links": {
+    "next": {
+      "href": "https://api.edamam.com/api/recipes/v2?q=biryani&app_key=3d0c7b028296776d416ba4b60edd55a4&_cont=CHcVQBtNNQphDmgVQntAEX4BYUtyDAIARmRHBWASYlZyAwAFUXlSUjBGNQN7VwJSRWQSUTZHMFVwAlVRSzdEBzdAYVF0BgUVLnlSVSBMPkd5BgNK&type=public&app_id=63bf14e4",
+      "title": "Next page"
+    }
+  },
+  "hits": [
+    {
+      "recipe": {
+        "uri": "http://www.edamam.com/ontologies/edamam.owl#recipe_9f7601d8128273e4612af5accde1ddac",
+        "label": "Chicken Biryani Recipe and Nutritional Information",
+        "image": "Link of image",
+        "source": "Lottie + Doof",
+        "url": "http://www.lottieanddoof.com/2012/09/lottie-doof-kelly-4/",
+        "calories": 222.875829140625,
+        "totalCO2Emissions": 195.21532691427203,
+        "co2EmissionsClass": "B",
+        "totalWeight": 142.0728540625
+      }
+    },
+    {
+      "recipe": {
+        "uri": "http://www.edamam.com/ontologies/edamam.owl#recipe_9f7601d8128273e4612af5accde1ddac",
+        "label": "Chicken Biryani Recipe and Nutritional Information",
+        "image": "Link of image",
+        "source": "Lottie + Doof",
+        "url": "http://www.lottieanddoof.com/2012/09/lottie-doof-kelly-4/",
+        "calories": 222.875829140625,
+        "totalCO2Emissions": 195.21532691427203,
+        "co2EmissionsClass": "B",
+        "totalWeight": 142.0728540625
+      }
+    }
+  ]
+}
+```  
+
+- Steps to Implement:
+  - Since we have already decoded the json data, in **getRecipe()** method, and saved in 
+    **data** variable, the data variable is of type Map. So we can access any element 
+    in it very easily.
+  - **In the **Home()** page, create a new variable named recipeList.** This will be used to 
+    store the list of _Recipes_ fetched from the Api.
+    ```dart
+    List<RecipeModel> recipeList = <RecipeModel>[];
+    ```
+  - Look at the json response sample, what we need is: data["hits"] > iterate it 
+    to get each recipe.
+  - Here's how to do it.
+    ```dart
+    data['hits'].forEach((element) {
+      // got the access to each element
+      // then, instantiate RecipeModel
+      RecipeModel recipeModel = RecipeModel();
+      // fill this instance with the fetched data 
+      recipeModel = RecipeModel.formMap(element['recipe']);
+      // add this model to the recipeList.
+      recipeList.add(recipeModel);
+    } )
+    ```
+    
+  - This is the final **getRecipe()** method.
+  ```dart
+    getRecipe(String query) async {
+        // getting response from Api
+        String url = "https://api.edamam.com/api/recipes/v2?q=$query&type=public&app_id=63bf14e4&app_key=3d0c7b028296776d416ba4b60edd55a4";
+        var response = await http.get(Uri.parse(url));
+        Map data = jsonDecode(response.body);
+        
+        // saving in models
+        data['hits'].forEach( (element) {
+          RecipeModel recipeModel = RecipeModel();
+          recipeModel = RecipeModel.fromMap(element['recipe']);
+          recipeList.add(recipeModel);
+        });
+        // log(recipeList.toString());
+        // a sample to access each recipe
+        recipeList.forEach( (recipe) {
+          print(recipe.appLabel);
+          print(recipe.appCalories);
+        });
+    }
+    
+  ```
 
 
 
